@@ -35,9 +35,3 @@ def read(data):
         error_msg = f'ERROR => The File {data} You\'re trying to reference does not exist'
         print_formatted_text(HTML(f'<b>{error_msg}</b>'))
         # return None
-
-
-# cle = DataCleaning("customer.das")
-# print(cle.read())
-
-print(read("../testing/Human Resources.xlsx"))
