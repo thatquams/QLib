@@ -4,16 +4,17 @@ warnings.filterwarnings("ignore")
 import pandas as pd
 from prompt_toolkit import print_formatted_text, HTML
 
-def read(self):
+def read(data):
 
     # Readable file formats
     actions = {'csv': pd.read_csv, 'xlsx': pd.read_excel,
-                'json': pd.read_json, 'sql': pd.read_sql,
-                'html': pd.read_html, 'pkl': pd.read_pickle}
+               'xls': pd.read_excel, 'json': pd.read_json, 
+               'sql': pd.read_sql, 'html': pd.read_html, 
+               'pkl': pd.read_pickle}
 
     # check if file path exists
-    if os.path.exists(self.data):
-        file_extension = self.data.split('.')[-1].lower()
+    if os.path.exists(data):
+        file_extension = data.split('.')[-1].lower()
         action = actions.get(file_extension)
 
         if action is None:
@@ -22,7 +23,7 @@ def read(self):
             return None
 
         try:
-            data_frame = action(self.data)
+            data_frame = action(data)
             return pd.DataFrame(data_frame)
 
         except Exception as e:
@@ -31,9 +32,12 @@ def read(self):
             return None
 
     else:
-        error_msg = f'ERROR => The File {self.data} You\'re trying to reference does not exist'
+        error_msg = f'ERROR => The File {data} You\'re trying to reference does not exist'
         print_formatted_text(HTML(f'<b>{error_msg}</b>'))
         # return None
 
-cle = DataCleaning("customer.das")
-print(cle.read())
+
+# cle = DataCleaning("customer.das")
+# print(cle.read())
+
+print(read("../testing/Human Resources.xlsx"))
