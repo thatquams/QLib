@@ -4,7 +4,7 @@ warnings.filterwarnings("ignore")
 import pandas as pd
 from prompt_toolkit import print_formatted_text, HTML
 
-def read(data, header=None):
+def read(data, header="default"):
 
     # Readable file formats
     actions = {'csv': pd.read_csv, 'xlsx': pd.read_excel,
@@ -17,36 +17,29 @@ def read(data, header=None):
         file_extension = data.split('.')[-1].lower()
         action = actions.get(file_extension)
 
-        if action is None:
-            error_msg = f'Invalid File Format: {file_extension}'
-            print_formatted_text(HTML(f'<b>{error_msg}</b>'))
-            return None
-        
+        # if header:
+        # index starts from zero, so this condition maintains the column headers
+            
+        # dataframe global variable
+        data_frame = action(data)
+
+        if header == "default":
+            try:
+                return pd.DataFrame(data_frame)
+
+            except Exception as e:
+                error_msg = f'Error reading file: {str(e)}'
+                return print_formatted_text(HTML(f'<b>{error_msg}</b>'))
+                # return None
+            
+        # if an index argument for the column header is passed
         else:
-            # dataframe global variable
-            data_frame = action(data)
-
-            """
-            if header:
-            index starts from zero, so this condition maintains the column headers
-            """
-            if header:
-                try:
-                    # data_frame = action(data)
-                    return pd.DataFrame(data_frame)
-
-                except Exception as e:
-                    error_msg = f'Error reading file: {str(e)}'
-                    print_formatted_text(HTML(f'<b>{error_msg}</b>'))
-                    return None
-                
-            # if an index argument for the column header is passed
-            else:
-                # not working yet
-                data_frame.columns = data_frame.iloc[:, header:]
-                data_frame = data_frame.iloc[header:]
-                # .reset_index(drop=True)
-                return (data_frame)
+            # # not working yet
+            # pass
+            data_frame = data_frame.iloc[header]
+            data_frame = data_frame.reset_index(drop=True)
+            
+            return (data_frame)
                         
     else:
         error_msg = f'ERROR => The File {data} You\'re trying to reference does not exist'
